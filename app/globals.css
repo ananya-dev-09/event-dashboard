@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --background: #081426;
+  --foreground: #dceaf7;
+  --card: #142a44;
+  --accent: #4a74a7;
+  --muted: #dceaf7;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+.panel {
+  @apply rounded-2xl border border-white/10 bg-[var(--card)]/80 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)];
+}
