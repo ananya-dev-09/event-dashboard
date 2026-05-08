@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   const exists = await UserModel.exists({ $or: [{ email: email.toLowerCase() }, { username }] });
   if (exists) return fail("User with email or username already exists", 409);
 
-  const passwordHash = await hash(password, 12);
+  const passwordHash = await hash(password, 14);
   const user = await UserModel.create({ ...rest, email: email.toLowerCase(), username, passwordHash });
 
   return ok({ id: String(user._id), email: user.email, role: user.role }, 201);

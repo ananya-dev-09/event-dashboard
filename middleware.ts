@@ -9,9 +9,9 @@ export async function middleware(request: NextRequest) {
     (pathname === "/api/events" ||
       pathname === "/api/posts/feed" ||
       pathname === "/api/posts" ||
+      pathname === "/api/dashboard/events/trending" ||
       pathname.startsWith("/api/events/") ||
       pathname.startsWith("/api/posts/") ||
-      pathname.startsWith("/api/dashboard/events/") ||
       pathname.startsWith("/api/quizzes/"));
 
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/api")) {
