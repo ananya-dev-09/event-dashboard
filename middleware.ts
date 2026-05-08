@@ -4,8 +4,19 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const isPublicApiGet =
+    request.method === "GET" &&
+    (pathname === "/api/events" ||
+      pathname === "/api/posts/feed" ||
+      pathname === "/api/posts" ||
+      pathname.startsWith("/api/events/") ||
+      pathname.startsWith("/api/posts/") ||
+      pathname.startsWith("/api/dashboard/events/") ||
+      pathname.startsWith("/api/quizzes/"));
 
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/api")) {
+    if (isPublicApiGet) return NextResponse.next();
+
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
     if (!token && !pathname.startsWith("/api/auth")) {

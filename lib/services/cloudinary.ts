@@ -7,10 +7,14 @@ cloudinary.config({
 });
 
 export function buildUploadSignature(paramsToSign: Record<string, string>) {
+  if (!process.env.CLOUDINARY_API_SECRET) {
+    throw new Error("Missing CLOUDINARY_API_SECRET");
+  }
+
   const timestamp = Math.floor(Date.now() / 1000);
   const signature = cloudinary.utils.api_sign_request(
     { ...paramsToSign, timestamp },
-    process.env.CLOUDINARY_API_SECRET || ""
+    process.env.CLOUDINARY_API_SECRET
   );
 
   return {

@@ -3,7 +3,15 @@ import { model, models, Schema, type InferSchemaType } from "mongoose";
 const userSchema = new Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true, lowercase: true, index: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"],
+    },
     username: { type: String, required: true, unique: true, index: true },
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["SUPER_ADMIN", "ORG_ADMIN", "INDIVIDUAL"], default: "INDIVIDUAL" },

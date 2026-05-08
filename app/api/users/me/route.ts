@@ -1,5 +1,6 @@
 import { getAuthSession } from "@/lib/auth/session";
 import { connectToDatabase } from "@/lib/db/mongoose";
+import { updateMeSchema } from "@/lib/validators/user";
 import { UserModel } from "@/models/User";
 import { fail, ok } from "@/lib/utils/route";
 
@@ -18,11 +19,13 @@ export async function PATCH(request: Request) {
   const session = await getAuthSession();
   if (!session?.user?.id) return fail("Unauthorized", 401);
 
-  const body = await request.json();
+  const payload = updateMeSchema.safeParse(await request.json());
+  if (!payload.success) return fail(payload.error.issues[0]?.message || "Invalid payload", 422);
+
   await connectToDatabase();
   const user = await UserModel.findByIdAndUpdate(
     session.user.id,
-    { $set: { name: body.name, bio: body.bio, avatarUrl: body.avatarUrl } },
+    { $set: payload.data },
     { new: true }
   )
     .select("-passwordHash")

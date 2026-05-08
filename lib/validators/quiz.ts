@@ -14,7 +14,7 @@ const questionSchema = z.object({
   }).optional(),
 });
 
-export const createQuizSchema = z.object({
+const quizBaseSchema = z.object({
   organizationId: z.string(),
   eventId: z.string().optional(),
   title: z.string().min(3),
@@ -25,3 +25,17 @@ export const createQuizSchema = z.object({
   endAt: z.coerce.date().optional(),
   questions: z.array(questionSchema).min(1),
 });
+
+export const createQuizSchema = quizBaseSchema
+  .refine((value) => !value.startAt || !value.endAt || value.endAt > value.startAt, {
+    message: "endAt must be after startAt",
+    path: ["endAt"],
+  });
+
+export const updateQuizSchema = quizBaseSchema
+  .omit({ organizationId: true })
+  .partial()
+  .refine((value) => !value.startAt || !value.endAt || value.endAt > value.startAt, {
+    message: "endAt must be after startAt",
+    path: ["endAt"],
+  });

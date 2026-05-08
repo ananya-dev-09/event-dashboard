@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createEventSchema = z.object({
+const eventBaseSchema = z.object({
   organizationId: z.string(),
   title: z.string().min(3),
   slug: z.string().min(2),
@@ -14,3 +14,17 @@ export const createEventSchema = z.object({
   capacity: z.number().int().positive().optional(),
   tags: z.array(z.string()).default([]),
 });
+
+export const createEventSchema = eventBaseSchema
+  .refine((value) => value.endAt > value.startAt, {
+    message: "endAt must be after startAt",
+    path: ["endAt"],
+  });
+
+export const updateEventSchema = eventBaseSchema
+  .omit({ organizationId: true })
+  .partial()
+  .refine((value) => !value.startAt || !value.endAt || value.endAt > value.startAt, {
+    message: "endAt must be after startAt",
+    path: ["endAt"],
+  });
