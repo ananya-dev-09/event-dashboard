@@ -1,0 +1,1 @@
+export const POST_CONTENT_MAX_LENGTH = 3000;

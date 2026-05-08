@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const dateTimeToDateSchema = z.string().datetime().transform((value) => new Date(value));
+
 const questionSchema = z.object({
   type: z.enum(["MCQ", "CODING"]),
   prompt: z.string().min(1),
@@ -21,8 +23,8 @@ const quizBaseSchema = z.object({
   description: z.string().min(3),
   instructions: z.string().optional(),
   durationSeconds: z.number().int().positive(),
-  startAt: z.coerce.date().optional(),
-  endAt: z.coerce.date().optional(),
+  startAt: dateTimeToDateSchema.optional(),
+  endAt: dateTimeToDateSchema.optional(),
   questions: z.array(questionSchema).min(1),
 });
 

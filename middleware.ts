@@ -1,18 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { PUBLIC_GET_API_PREFIXES, PUBLIC_GET_API_ROUTES } from "@/constants/public-api";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isPublicApiGet =
     request.method === "GET" &&
-    (pathname === "/api/events" ||
-      pathname === "/api/posts/feed" ||
-      pathname === "/api/posts" ||
-      pathname === "/api/dashboard/events/trending" ||
-      pathname.startsWith("/api/events/") ||
-      pathname.startsWith("/api/posts/") ||
-      pathname.startsWith("/api/quizzes/"));
+    (PUBLIC_GET_API_ROUTES.includes(pathname as (typeof PUBLIC_GET_API_ROUTES)[number]) ||
+      PUBLIC_GET_API_PREFIXES.some((prefix) => pathname.startsWith(prefix)));
 
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/api")) {
     if (isPublicApiGet) return NextResponse.next();

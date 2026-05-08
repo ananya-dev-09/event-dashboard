@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const dateTimeToDateSchema = z.string().datetime().transform((value) => new Date(value));
+
 const eventBaseSchema = z.object({
   organizationId: z.string(),
   title: z.string().min(3),
@@ -8,9 +10,9 @@ const eventBaseSchema = z.object({
   mode: z.enum(["ONLINE", "OFFLINE", "HYBRID"]),
   venue: z.string().optional(),
   meetingLink: z.string().url().optional(),
-  startAt: z.coerce.date(),
-  endAt: z.coerce.date(),
-  registrationDeadline: z.coerce.date().optional(),
+  startAt: dateTimeToDateSchema,
+  endAt: dateTimeToDateSchema,
+  registrationDeadline: dateTimeToDateSchema.optional(),
   capacity: z.number().int().positive().optional(),
   tags: z.array(z.string()).default([]),
 });

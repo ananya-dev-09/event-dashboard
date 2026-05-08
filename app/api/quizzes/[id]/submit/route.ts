@@ -14,14 +14,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!attemptId || !Array.isArray(answers)) return fail("attemptId and answers are required", 422);
 
   await connectToDatabase();
-  const quiz = await QuizModel.findById(id).lean();
+  const quiz = await QuizModel.findById(id).lean<{
+    questions?: Array<{ correctAnswer?: string; marks?: number; negativeMarks?: number }>;
+  }>();
   if (!quiz) return fail("Quiz not found", 404);
 
-  const questions = (quiz.questions ?? []) as Array<{
-    correctAnswer?: string;
-    marks?: number;
-    negativeMarks?: number;
-  }>;
+  const questions = quiz.questions ?? [];
   const correctAnswers = questions.map((q) => q.correctAnswer ?? "");
   const marks = questions.map((q) => q.marks ?? 0);
   const negativeMarks = questions.map((q) => q.negativeMarks ?? 0);

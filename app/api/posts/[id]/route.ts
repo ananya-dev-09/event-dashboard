@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { ROLES } from "@/lib/auth/roles";
 import { getAuthSession } from "@/lib/auth/session";
+import { POST_CONTENT_MAX_LENGTH } from "@/constants/validation";
 import { connectToDatabase } from "@/lib/db/mongoose";
 import { PostModel } from "@/models/Post";
 import { fail, ok } from "@/lib/utils/route";
 
 const updatePostSchema = z.object({
-  contentText: z.string().min(1).max(3000).optional(),
+  contentText: z.string().min(1).max(POST_CONTENT_MAX_LENGTH).optional(),
   visibility: z.enum(["PUBLIC", "FOLLOWERS"]).optional(),
   hashtags: z.array(z.string()).optional(),
 });
